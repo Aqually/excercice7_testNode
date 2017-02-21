@@ -4,22 +4,24 @@ let provinces = null
 fs.readFile('provinces.json', lireJSON)
 
 function lireJSON(err, data) {
-    if (err) throw err
+    if (err)
+        throw err
     provinces = JSON.parse(data)
 }
 
-function montrerLesProvinces(provinces){
-    let arr = []
-    for (province in provinces){
-        arr = [...arr,(`${province} - ${provinces[province]}`)];
+function montrerLesProvinces(provinces) {
+    let stringProvinces = "";
+    for (province in provinces) {
+        stringProvinces += `<tr><td style="border: 1px solid black">${province}</td> <td style="border: 1px solid black">${provinces[province]}</td></tr>`
     }
-    return arr;
+    return stringProvinces;
 }
 
-http.createServer( (request, response) => {
-  response.writeHead(200, {"Content-Type": "text/html"});
-  montrerLesProvinces(provinces).map((province) => {
-    response.write(province);
-  });
-  response.end();
+http.createServer((request, response) => {
+    response.writeHead(200, {"Content-Type": "text/html"});
+    let table = "<table style='font-size: 2em; text-align: center; margin: 0 auto; width: 80%;'>";
+    table += montrerLesProvinces(provinces)
+    table += "</table>"
+    response.write(table);
+    response.end();
 }).listen(8888);
